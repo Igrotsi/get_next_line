@@ -6,7 +6,7 @@
 /*   By: flahalle <flahalle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 14:29:58 by flahalle          #+#    #+#             */
-/*   Updated: 2024/12/18 18:28:55 by flahalle         ###   ########.fr       */
+/*   Updated: 2024/12/19 20:05:14 by flahalle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 100000000
 # endif
 
 # include <ctype.h>

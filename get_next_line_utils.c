@@ -6,7 +6,7 @@
 /*   By: flahalle <flahalle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 14:29:55 by flahalle          #+#    #+#             */
-/*   Updated: 2024/12/18 19:05:18 by flahalle         ###   ########.fr       */
+/*   Updated: 2024/12/19 19:18:45 by flahalle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ char	*ft_strjoin(char *s1, char *s2)
 	s3 = (char *)malloc(sizeof(char) * (ft_strlen(s1, 0) + ft_strlen(s2, '\n')
 				+ 1) + ft_strchr(s2, '\n'));
 	if (s3 == NULL)
+	{
+		free(s1);
 		return (NULL);
+	}
 	while (s1 && s1[i])
 		s3[j++] = s1[i++];
 	i = 0;
@@ -53,8 +56,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (s2[i] == '\n')
 		s3[j++] = '\n';
 	s3[j] = '\0';
-	if (s1)
-		free(s1);
+	free(s1);
 	return (s3);
 }
 
@@ -65,7 +67,7 @@ size_t	ft_strlcpy(char *dest, char *src, size_t size)
 	i = 0;
 	if (size == 0)
 		dest[0] = '\0';
-	while (src[i] != '\0' && i + 1 < size)
+	while (src[i] != '\0' && i < size)
 	{
 		dest[i] = src[i];
 		i++;
