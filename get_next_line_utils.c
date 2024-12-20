@@ -6,13 +6,20 @@
 /*   By: flahalle <flahalle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 14:29:55 by flahalle          #+#    #+#             */
-/*   Updated: 2024/12/19 19:18:45 by flahalle         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:52:37 by flahalle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strdup(char *s)
+void	clear_buffer(char *stash, char *line)
+{
+	if (line != NULL)
+		free(line);
+	ft_bzero(stash);
+}
+
+char	*ft_strdup(const char *s)
 {
 	char	*dest;
 	int		i;
@@ -41,14 +48,15 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	i = 0;
 	j = 0;
-	s3 = (char *)malloc(sizeof(char) * (ft_strlen(s1, 0) + ft_strlen(s2, '\n')
-				+ 1) + ft_strchr(s2, '\n'));
-	if (s3 == NULL)
-	{
-		free(s1);
+	if (!s1)
 		return (NULL);
-	}
-	while (s1 && s1[i])
+	if (!s2)
+		return (free(s1), NULL);
+	s3 = (char *)malloc(sizeof(char) * (ft_strlen(s1, 0) + ft_strlen(s2, '\n')
+				+ 1));
+	if (s3 == NULL)
+		return (free(s1), NULL);
+	while (s1[i])
 		s3[j++] = s1[i++];
 	i = 0;
 	while (s2[i] && s2[i] != '\n')
@@ -60,7 +68,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (s3);
 }
 
-size_t	ft_strlcpy(char *dest, char *src, size_t size)
+size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
 	size_t	i;
 
@@ -77,7 +85,7 @@ size_t	ft_strlcpy(char *dest, char *src, size_t size)
 	return (ft_strlen(src, 0));
 }
 
-size_t	ft_strlen(char *str, char c)
+size_t	ft_strlen(const char *str, char c)
 {
 	size_t	i;
 
@@ -91,23 +99,4 @@ size_t	ft_strlen(char *str, char c)
 	if (str[i] == c && c != '\0')
 		i++;
 	return (i);
-}
-
-char	*ft_substr(char *s, unsigned int start, size_t len)
-{
-	char	*result;
-	size_t	slen;
-
-	slen = ft_strlen(s, 0);
-	if (!s)
-		return (NULL);
-	if (start >= slen)
-		return (ft_strdup(""));
-	if (start + len > slen)
-		len = slen - start;
-	result = (char *)malloc(sizeof(char) * (len + 1));
-	if (result == NULL)
-		return (NULL);
-	ft_strlcpy(result, s + start, len + 1);
-	return (result);
 }

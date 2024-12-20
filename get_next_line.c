@@ -6,25 +6,25 @@
 /*   By: flahalle <flahalle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 14:29:50 by flahalle          #+#    #+#             */
-/*   Updated: 2024/12/19 20:13:45 by flahalle         ###   ########.fr       */
+/*   Updated: 2024/12/20 16:05:45 by flahalle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static void	ft_bzero(char *str)
+void	ft_bzero(char *str)
 {
 	int	i;
 
 	i = 0;
-	while (str[i])
+	while (str && str[i])
 	{
 		str[i] = '\0';
 		i++;
 	}
 }
 
-int	ft_strchr(char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
 	size_t	i;
 
@@ -35,61 +35,48 @@ int	ft_strchr(char *s, int c)
 	while (s[i])
 	{
 		if (((unsigned char *)s)[i] == c)
-			return (1);
+			return ((void *)(s + i));
 		i++;
 	}
 	if (c == '\0')
-		return (0);
-	return (0);
+		return ((void *)(s + i));
+	return (NULL);
 }
 
 static char	*get_left(char *stash)
 {
-	char	*temp;
-
-	temp = ft_substr(stash, ft_strlen(stash, '\n'), ft_strlen(stash, '\0')
-			- ft_strlen(stash, '\n'));
-	if (!temp)
-		return (NULL);
-	ft_strlcpy(stash, temp, ft_strlen(temp, 0));
-	free(temp);
+	if (ft_strchr(stash, '\n'))
+		ft_strlcpy(stash, ft_strchr(stash, '\n') + 1, ft_strlen(stash, 0));
+	else
+		stash[0] = '\0';
 	return (stash);
 }
 
 static char	*get_line(char *stash, int fd)
 {
-	char	*temp;
+	char	*line;
 	int		nbyte_read;
 
 	nbyte_read = 1;
-	temp = NULL;
-	if (stash && stash[0])
-	{
-		temp = ft_strjoin(temp, stash);
-		if (!temp)
-			return (NULL);
-	}
-	if (ft_strchr(temp, '\n'))
-		return (temp);
+	line = NULL;
+	line = ft_strdup("");
+	if (!line)
+		return (NULL);
 	while (nbyte_read)
 	{
+		line = ft_strjoin(line, stash);
+		if (!line)
+			return (NULL);
+		if (ft_strchr(line, '\n'))
+			return (line);
 		nbyte_read = read(fd, stash, BUFFER_SIZE);
+		if (nbyte_read == 0 && stash[0] == '\0')
+			return (free(line), NULL);
 		stash[nbyte_read] = '\0';
-		if (nbyte_read == -1)
-		{
-			ft_bzero(stash);
-			free(temp);
-			return (NULL);
-		}
-		if (nbyte_read == 0)
-			break ;
-		temp = ft_strjoin(temp, stash);
-		if (!temp)
-			return (NULL);
-		if (ft_strchr(stash, '\n'))
-			return (temp);
+		if (nbyte_read < 0)
+			return (clear_buffer(stash, line), NULL);
 	}
-	return (temp);
+	return (line);
 }
 
 char	*get_next_line(int fd)
@@ -97,16 +84,12 @@ char	*get_next_line(int fd)
 	static char	stash[BUFFER_SIZE + 1];
 	char		*line;
 
-	if (fd < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = get_line(stash, fd);
+	get_left(stash);
 	if (!line)
 		return (NULL);
-	if (!get_left(stash))
-	{
-		free(line);
-		return (NULL);
-	}
 	return (line);
 }
 
